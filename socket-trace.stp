@@ -1,0 +1,15 @@
+
+probe kernel.function("*@net/socket.c").call {
+  printf("%s -> %s\n", thread_indent(1), ppfunc())
+  printf("Args: %s\n\n", $$parms)
+}
+
+probe kernel.function("*@net/socket.c").inline {
+  printf("%s # %s\n", thread_indent(1), ppfunc())
+  printf("Args: %s\n\n", $$parms)
+}
+
+probe kernel.function("*@net/socket.c").return {
+  printf("%s <- %s\n", thread_indent(-1), ppfunc())
+  printf("Return: %s\n\n", $$return)
+}
