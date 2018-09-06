@@ -1,0 +1,21 @@
+
+probe begin {
+  printf("Staring systemtap session for pid=%i\n", target());
+}
+
+probe end {
+if (pid() == target()) {
+    printf("Bye bye!\n");
+  }
+}
+
+
+probe process("/usr/lib64/libc.so.6").function("malloc") {
+  if (pid() == target()) {
+    if ($bytes > 20000) {
+      printf("%s: malloc(%d)\n", ctime(gettimeofday_s()), $bytes);
+      print_ubacktrace();
+      printf("\n\n");
+    }
+  }
+}
